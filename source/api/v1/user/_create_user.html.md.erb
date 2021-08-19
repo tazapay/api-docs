@@ -1,0 +1,77 @@
+## Create User
+> Request For Individual:
+
+```json
+{
+    "email": "shrikar+729@tazapay.com",
+    "country": "IN",
+    "contact_code": "+91",
+    "contact_number": "",
+    "ind_bus_type": "Individual",
+    "first_name": "Shrikar",
+    "last_name": "vaitala"
+}
+
+```
+
+> Request For Business:
+
+```json
+{
+    "email": "shrikar+729@tazapay.com",
+    "country": "IN",
+    "contact_code": "+91",
+    "contact_number": "",
+    "ind_bus_type": "Business",
+    "business_name":"business name"
+}
+```
+
+> Response:
+
+
+```json
+{
+    "status": "success",
+    "message": "Partner user signup successful",
+    "data": {
+        "account_id": "afcd6ed3-8c48-471d-8f6c-beee2f504274",
+        "customer_id": "1373413"
+    }
+}
+```
+
+### HTTP Request
+
+<span class="http-method post">POST</span> `/v1/user`
+
+
+### Body Parameters
+
+The payload for body should be submitted in `application/json` format.
+
+Parameter                                                                 | Description
+--------                                                                  | --------
+email<br><small>required</small>                                          | `string` User's email address
+first_name<br><small>required **if** ind_bus_type is Individual</small>   | `string` User's first name
+last_name<br><small>required **if** ind_bus_type is Individual</small>    | `string` User's last namee
+contact_code<br><small>optional</small>                                   | `string` Mobile country code of the user
+contact_number <br><small>optional</small>                                | `string` User's mobile number
+country<br><small>required</small>                                        | `string` User's country, in ISO 3166 standard alpha-2 code. eg: SG, IN, US, etc. <br></brThe>The complete list can be fetched from <a href="https://www.iso.org/obp/ui/#search">Country List</a>
+ind_bus_type<br><small>required</small>                                   | `string` User's entity type. Can be: `Business` or `Individual`
+business_name<br><small>required, **if** ind_bus_type is Business</small> | `string` Name of the business
+partners_customer_id<br><small>optional</small>                           | `string` User's ID or reference number on your platform
+
+### Response
+
+Parameter                | Description
+--------                 | --------
+message                  | `string` Success or failure messsage.
+status                   | `string` Success of failure status code.
+data                     | `data` Create User Data Object. Please check <a href="/index.html#create_user_data">Create User Data Object</a>
+
+### create_user_data
+Parameter             | Description
+---------             | -----------
+account_id            | `string` Account ID of the newly created user
+customer_id           | `string` Customer reference ID as shared by the partner

@@ -1,0 +1,120 @@
+# Authentication
+
+To start using our APIs, you will require certain credentials that we will use to identify and authorise the use of 'Tazapay APIs'.
+
+Tazapay uses API keys to authenticate requests. Once a marketplace has completed their onboarding process with Tazapay, Tazapay issues an API key & secret to a marketplace.
+
+## How to get your credentials?
+
+Please reach out to us at contact@tazapay.com to obtain your credentials. You will get the following credentials from us to start using the API.
+
+| Name       | Description                                                                                  |
+|------------|----------------------------------------------------------------------------------------------|
+| API-Key    |  Will be used to identify you on consuming the API                                           |
+| API-Secret |  Will need to generate the authorisation token which is used to access restricted resources| |
+
+
+
+## Signature Calculation
+```javascript
+
+  to_sign = upper_case_http_method + endpoint_url_path + Salt + Timestamp + API-Key + API-Secret
+  signature = Base64(HmacSHA256(to_sign, API-Secret))
+
+```
+
+> Signature calculation snippet in Python:
+
+```python
+
+# Sample python program to call Tazapay sandbox API
+​
+import hashlib
+import base64
+import json
+import requests
+from datetime import datetime
+import calendar
+from random import *
+import hmac
+​
+access_key = 'your-access-key'
+secret_key = 'your-secret-key'
+salt = 'Tif6r2ZqVn'
+​
+http_method = 'POST' # upper case
+base_url = 'https://api-sandbox.tazapay.com'
+path = '/v1/user' # This can hold any value of the supported API.
+​
+# Current Unix time.
+d = datetime.utcnow()
+timestamp = calendar.timegm(d.utctimetuple())
+​
+# generate signature
+to_sign = http_method + path + salt + str(timestamp) + access_key + secret_key
+h = hmac.new(bytes(secret_key, 'utf-8'), bytes(to_sign, 'utf-8'), hashlib.sha256)
+signature = base64.urlsafe_b64encode(str.encode(h.hexdigest()))
+​
+headers = {
+    'accesskey': access_key,
+    'signature': signature,
+    'salt': salt,
+    'timestamp': str(timestamp)
+}
+​
+payload = {
+    "email": "support@tazapay.com",
+    "country": "Singapore",
+    "ind_bus_type": "Business",
+    "business_name":"business name"
+}
+​
+response = requests.post(url=base_url+path, json=payload, headers=headers)
+print(json.loads(response.content.decode('utf-8')))
+
+```
+
+Calculate the signature as shown below
+
+signature = BASE64 ( HMAC-SHA256 ( upper_case_http_method + endpoint_url_path + Salt + Timestamp + API-Key + API-Secret) + API-Secret)
+
+You will need the following to calculate the signature:
+
+| Name                   | Description                                   |
+|------------------------|-----------------------------------------------|
+| upper_case_http_method | API method verb in uppercase (GET, POST etc)  |
+| endpoint_url_path      | The complete URL of the API you are calling   |
+| API-Key                | Provided to you                               |
+| API-Secret             | Provided to you                               |
+| Salt                   | Random value                                  |
+| Timestamp              | Current timestamp                             |
+
+All API calls need authentication using a base64 encoded hash signature, using the HMAC SHA-256 algorithm. 
+
+# API Headers
+
+For each and every API call, you need to include the following in the header section:
+
+| Key           | Value                                         |
+|---------------|-----------------------------------------------|
+| accesskey     | same key used in the signature computation    |
+| salt          | salt used in signature computation            |
+| signature     | signature computed above                      |
+| timestamp     | timestamp used in the signature computation   |
+
+## Tazapay Endpoints
+
+All Tazapay endpoints are located on a single domain. The Tazapay API is served over https and unencrypted http connections are not supported.
+
+
+## Types of API
+
+
+Tazapay has 2 types of APIs :
+
+* Native  API: This is a pure back-end API interaction between your platform and Tazapay
+* Hosted page API: When you make a call to a Tazapay hosted API, Tazapay will return a URL, to which the customer can be redirected
+
+# API Notifications
+
+In phase 1, in order to check on transactions, Tazapay will be providing ‘Get APIs’ which you need to poll. Webhooks will be added in the subsequent phases.

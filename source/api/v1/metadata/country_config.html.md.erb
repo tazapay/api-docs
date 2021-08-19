@@ -1,0 +1,47 @@
+## Country Config
+
+> Response:
+
+```json
+{
+    "status": "success",
+    "data": {
+        "market_type": "buyer",
+        "buyer_countries": null, // or []string
+        "seller_countries": [
+            "AE",
+            "AR",
+            "AT",
+            "AU",
+            "BD"
+        ]
+    }
+}
+```
+
+### HTTP Request
+
+<span class="http-method get">GET</span> `/v1/escrow/metadata/countryconfig?country=SG`
+
+### Query Parameters
+
+Parameter       | Type        | Value
+---------       | -------     | -----------
+country         | **string**  |  ISO 3166 standard alpha-2 code. eg: SG, IN, US, etc.
+
+### Response
+
+Parameter                | Description
+--------                 | --------
+status                   | `string` returns the status of the API, "success" (or) "error_response"
+data                     | `data` Data object. Please check <a href="/index.html#country_config">country_config</a> 
+
+### country_config
+
+Parameter        | Description
+---------        | -----------
+market_type      | `string` Describes about the market type for this country, possible values : `buyer`, `seller`, `both`
+buyer_countries  | `[]string` Gives a list of buyer countries.
+seller_countries | `[]string` Gives a list of seller countries.
+
+If the txn initiator is a buyer; use seller_countries object to list the counter party country, vice-versa.
